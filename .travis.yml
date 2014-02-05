@@ -7,5 +7,6 @@ node_js:
 services:
   - couchdb
 before_script:
+  - curl -HContent-Type:application/json -vXPUT http://localhost:5984/_users/org.couchdb.user:test --data-binary '{"_id":"org.couchdb.user:test","name":"test","roles":[],"type":"user","password":"test"}'
   - node ./test/helpers/seed.js
   
