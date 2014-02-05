@@ -8,25 +8,39 @@
  */
 
 
-if (process.argv.length < 5) {
-	console.log("Usage: couchjob [couchdb-name] [design-doc-name] [startup-module-name]");
-	process.exit(1);
-}
+var argv = require('optimist')
+	.usage('Your local Node.js running remote CouchApp code\nUsage: $0')
+	.option('connection', {
+		alias : 'c',
+		default : 'http://localhost:5984',
+		describe : '[protocol://]hostname[:port]'})
+	.option('database', {
+		alias: 'b',
+		demand : true,
+		describe : 'Database name'})
+	.option('ddoc', {
+		alias : 'd',
+		demand : true,
+		describe : 'Design document name'})
+	.option('module', {
+		alias : 'm',
+		demand : true,
+		describe : 'Module that contains your code'})
+	.argv;
+
 
 /// config //////
 
-var couchdb_srv = 'http://localhost:5984/';
-var couchdb_db = process.argv[2];
-var couchdb_ddoc = process.argv[3];
-var init_module_name = process.argv[4];
-
-var couchdb_uri_prefix = couchdb_srv + couchdb_db + "/_design/" + couchdb_ddoc + "/";
+// TODO: Use a REST library where we can just demand a URL?
+var couchdb_uri_prefix = require('util').format(
+	'couchdb:%s/%s/_design/%s/',
+	argv.connection, argv.database, argv.ddoc
+);
 
 
 /// setup //////
 
 var Needy = require('needy'),
-	couchdb = require('couchdb-api'),
 	Fiber = require('fibers'),
 	Future = require('fibers/future');
 
@@ -34,25 +48,26 @@ var Needy = require('needy'),
 /// CouchDbModuleResolver //////
 
 function CouchDbModuleResolver(db, ddoc_name) {
-	this._designdoc = db.ddoc(ddoc_name);
-	this._fallback_resolver = new Needy.Resolver({ /* no options */ });
+	this._ddoc = db.ddoc(ddoc_name);
+	this._resolver_fallback = new Needy.Resolver({ /* no options */ });
 }
 
 Needy.Resolver.extend(CouchDbModuleResolver, {
-	resolve : function(identity, dirname) {
+	resolve : function(module_name, dir_name) {
 		var self = this;
-		if(dirname) {
-			console.logger("WARN: dirname is not supported! [value = %s]", dirname);
+		if(dir_name) {
+			console.warn("WARN: dirname is not supported! [value = %s]", dir_name);
 		}
 
 		var future = new Future;
-		self._designdoc.attachment(identity).get(future.resolver());
+		self._ddoc.attachment(module_name).get(future.resolver());
 
 		try {
 			var result = future.wait();
-			return new Needy.Module(couchdb_uri_prefix + identity, result);
+			return new Needy.Module(couchdb_uri_prefix + module_name, result);
 		} catch(couchDbError) {
-			return self._fallback_resolver.resolve(identity, dirname);
+			console.warn('HINT: cannot resolve module [%s] on your CouchDB, falling back to local', module_name);
+			return self._resolver_fallback.resolve(module_name, dir_name);
 		}
 	}
 });
@@ -62,13 +77,15 @@ Needy.Resolver.extend(CouchDbModuleResolver, {
 /// start up //////
 
 Fiber(function(){
-	console.info("Connecting to CouchDB @ " + couchdb_srv + couchdb_db);
-	var db = require('couchdb-api').srv(couchdb_srv).db(couchdb_db);
+	console.info('Connecting to CouchDB @ %s/%s', argv.connection, argv.database);
+	var db = require('couchdb-api').srv(argv.connection).db(argv.database);
 
-	console.info("Starting Module: " + init_module_name);
-	var needy = new Needy({resolver: new CouchDbModuleResolver(db, couchdb_ddoc)});
+	var needy = new Needy({
+		resolver: new CouchDbModuleResolver(db, argv.ddoc)
+	});
 
-	needy.init(init_module_name)
+	console.info("Starting Module: " + argv.module);
+	needy.init(argv.module);
 }).run();
 
 
