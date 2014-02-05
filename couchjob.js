@@ -77,6 +77,7 @@ Needy.Resolver.extend(CouchDbModuleResolver, {
 /// start up //////
 
 Fiber(function(){
+	// TODO: Replace couchdb-api by cradle
 	console.info('Connecting to CouchDB @ %s/%s', argv.connection, argv.database);
 	var db = require('couchdb-api').srv(argv.connection).db(argv.database);
 

@@ -6,6 +6,9 @@
   "directories": {
     "test": "test"
   },
+  "bin": {
+    "couchjob": "./couchjob.js"
+  },
   "scripts": {
     "test": "mocha"
   },
@@ -20,5 +23,17 @@
   ],
   "author": "Felix Neumann <dev@fxnn.de> (http://fxnn.de/)",
   "license": "MIT",
-  "gitHead": "59d8b341d340bd2ea537f197470ac2699fe7e466"
+  "gitHead": "59d8b341d340bd2ea537f197470ac2699fe7e466",
+  "dependencies": {
+    "cradle": "0.6.x",
+    "optimist": "0.6.x",
+    "needy": "0.5.x",
+    "fibers": "1.0.x",
+    "couchdb-api": "1.2.x"
+  },
+  "devDependencies": {
+    "mocha": "1.17.x",
+    "should": ">= 2.0.x"
+  },
+  "engine": "node >= 0.6"
 }
