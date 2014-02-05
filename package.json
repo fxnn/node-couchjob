@@ -1,0 +1,24 @@
+{
+  "name": "couchjob",
+  "version": "0.1.0",
+  "description": "Executes Node.js code from a CouchDB instance on your local machine.",
+  "main": "couchjob.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/fxnn/node-couchjob.git"
+  },
+  "keywords": [
+    "couchdb",
+    "remote",
+    "job"
+  ],
+  "author": "Felix Neumann <dev@fxnn.de> (http://fxnn.de/)",
+  "license": "MIT",
+  "gitHead": "59d8b341d340bd2ea537f197470ac2699fe7e466"
+}
