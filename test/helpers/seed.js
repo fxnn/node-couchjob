@@ -1,7 +1,5 @@
 
-var db = new(require('cradle').Connection)({
-	auth : { username : 'test', password : 'test' }
-}).database('couchjob_test');
+var db = new(require('cradle').Connection)().database('couchjob_test');
 
 
 createDb()
