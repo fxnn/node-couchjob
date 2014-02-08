@@ -38,7 +38,9 @@ function whenCouchJob(args, cb){
 		args = '';
 	}
 
-	require('child_process').exec('./couchjob.js ' + args,
+	var bin = 'bin';
+
+	require('child_process').exec(bin + '/couchjob ' + args,
 		function(result, stdout, stderr) {
 			cb(stdout + '\n' + stderr, result ? result.code : 0);
 		}

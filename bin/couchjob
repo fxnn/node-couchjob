@@ -1,0 +1,48 @@
+#!/usr/bin/env node
+
+/*
+ * CouchJob
+ * executes CouchDB-hosted code with Node.js
+ *
+ * author: Felix Neumann <dev@fxnn.de>
+ * web: http://github.com/fxnn/node-couchjob
+ *
+ * vim: set filetype=javascript:
+ */
+
+
+var argv = require('optimist')
+	.usage('Your local Node.js running remote CouchApp code\nUsage: $0')
+	.option('connection', {
+		alias : 'c',
+		default : 'http://localhost:5984',
+		describe : '[protocol://]hostname[:port]'})
+	.option('database', {
+		alias: 'b',
+		demand : true,
+		describe : 'Database name'})
+	.option('ddoc', {
+		alias : 'd',
+		demand : true,
+		describe : 'Design document name'})
+	.option('module', {
+		alias : 'm',
+		demand : true,
+		describe : 'Module that contains your code'})
+	.argv;
+
+
+
+var path = require('path'),
+	fs = require('fs');
+
+// TODO: Error handling for the following line
+var lib = path.join(path.dirname(fs.realpathSync(__filename)), '../lib');
+
+
+
+var CouchJob = require(lib + '/CouchJob.js');
+
+new CouchJob(argv.connection, argv.database, argv.ddoc, argv.module).run();
+
+

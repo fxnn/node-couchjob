@@ -1,5 +1,10 @@
 
-var db = new(require('cradle').Connection)().database('couchjob_test');
+var cradle_args = {};
+if(process.env.COUCHJOB_TEST_AUTH) {
+	cradle_args.auth = process.env.COUCHJOB_TEST_AUTH;
+}
+
+var db = new(require('cradle').Connection)(cradle_args).database('couchjob_test');
 
 
 createDb()
