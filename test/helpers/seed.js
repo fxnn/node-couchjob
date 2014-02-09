@@ -31,7 +31,7 @@ function createHelloWorld() {
 		var attachment = {
 			name : 'world.js',
 			'Content-Type': 'text/plain',
-			body : 'console.log("Hello, world!");'
+			body : 'module.exports = "Hello, world!"; console.log(module.exports);'
 		}
 
 		db.saveAttachment('_design/hello', attachment, assertOk(finish));

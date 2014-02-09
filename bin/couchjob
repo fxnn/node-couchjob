@@ -16,7 +16,7 @@ var argv = require('optimist')
 	.option('connection', {
 		alias : 'c',
 		default : 'http://localhost:5984',
-		describe : '[protocol://]hostname[:port]'})
+		describe : 'protocol://hostname[:port]'})
 	.option('database', {
 		alias: 'b',
 		demand : true,
@@ -33,16 +33,25 @@ var argv = require('optimist')
 
 
 
-var path = require('path'),
+var util = require('util'),
+	path = require('path'),
 	fs = require('fs');
 
-// TODO: Error handling for the following line
 var lib = path.join(path.dirname(fs.realpathSync(__filename)), '../lib');
-
 
 
 var CouchJob = require(lib + '/CouchJob.js');
 
-new CouchJob(argv.connection, argv.database, argv.ddoc, argv.module).run();
+new CouchJob(argv.connection, argv.database, argv.ddoc)
+	.run(argv.module, function (err, exports) {
+		if(err) {
+			console.error('ERROR', 'Could not execute your CouchJob because of:');
+			console.error(err.toString());
+
+			process.exit(1);
+		}
+
+		process.exit(0);
+	});
 
 
