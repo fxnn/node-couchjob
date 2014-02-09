@@ -9,12 +9,51 @@ machine. In essence, it brings background jobs to CouchApp.
   - `require()`-ing server side scripts enabled!
 
 More documentation is soon to come.
-
+    
 
 Build Status
 ------------
 
 [![Build Status](https://travis-ci.org/fxnn/node-couchjob.png?branch=master)](https://travis-ci.org/fxnn/node-couchjob) [![Dependency Status](https://gemnasium.com/fxnn/node-couchjob.png)](https://gemnasium.com/fxnn/node-couchjob)
+
+
+Installation
+------------
+
+This is not yet published as NPM package, so for now you got to
+
+    git clone git@github.com:fxnn/node-couchjob.git
+    npm test
+    npm install
+    
+    
+Usage
+-----
+
+You can use it from the commandline, just execute the
+
+    couchjob
+    
+binary for usage information. You may also
+
+    var CouchJob = require('couchjob');
+    new CouchJob('http://localost:5984', 'database_name', 'design_doc_name').run(
+        'module_name.js', function(err, module_exports) { /* ... */ }
+    );
+    
+    
+Dependencies
+------------
+
+Special thanks go to the authors of following libraries and frameworks:
+
+ * [couchdb-api](https://github.com/dominicbarnes/node-couchdb-api)
+ * [cradle](https://github.com/cloudhead/cradle)
+ * [fibers](https://github.com/laverdet/node-fibers)
+ * [mocha](https://github.com/visionmedia/mocha)
+ * [needy](https://github.com/BlueJeansAndRain/needy)
+ * [optimist](https://github.com/substack/node-optimist)
+ * [should](https://github.com/visionmedia/should.js)
 
 
 License (MIT)
