@@ -41,6 +41,26 @@ binary for usage information. You may also
         'module_name.js', function(err, module_exports) { /* ... */ }
     );
     
+
+Security
+--------
+
+When remote code is executed on the local machine, it's always better to think twice.
+Basically, you should **only execute trusted code** from **trusted databases** with CouchJob.
+
+That being said, it should always considered possible that your CouchDB gets hacked and the attacker
+is able to execute arbitrary code via CouchJob on all machines accessing the CouchDB in question.
+
+To prevent this, we'll rely on the good old **principle of small interfaces**, which will some day
+include
+
+ * restriction of the CouchDB instances, the databases, the design documents and the scripts that might
+   be executed via configuration files, so that an attacker would need write access to your file system
+   to execute remote code (cf. issue #1),
+ * restriction of the modules that might get `require()`d by remote Node.js scripts (cf. issue #2),
+ * restriction of runtime information that is provided to remote Node.js scripts (cf. issue #3).
+
+
     
 Dependencies
 ------------
